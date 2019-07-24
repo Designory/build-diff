@@ -186,6 +186,6 @@ const { trimStart } = require('lodash');
 		console.log('  ' + files_changed.join('\n  ') + '\n');
 	}
 
-	let relative_output_dir = path.relative(process.cwd(), output_directory_name);
+	let relative_output_dir = path.relative(process.cwd(), output_dir);
 	console.log(`All changed files have been copied to ${relative_output_dir.cyan}, and zipped in ${(relative_output_dir + '.zip').cyan}\n`);
 })();

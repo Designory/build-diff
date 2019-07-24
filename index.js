@@ -35,7 +35,11 @@ const { trimStart } = require('lodash');
 	console.log(`Comparing "${build_old.magenta}" against "${build_new.magenta}"...`);
 
 	// If we are here, both directories exist, so let's compute the differences between them
+
 	let diff_result;
+	const CHANGED_FILES_BLACKLIST = [
+		'.DS_Store'
+	];
 	try {
 		process.stdout.write('Diffing directories... '.yellow);
 		diff_result = await execPromise(`diff -q -r "${build_old}" "${build_new}"`);
@@ -139,6 +143,9 @@ const { trimStart } = require('lodash');
 
 	// Concat 'added' and 'updated' since functionally they are no different when uploading to AWS (or other)
 	let files_changed = files_updated.concat(files_added);
+
+	// Filter files we don't care about
+	files_changed = files_changed.filter(file => !CHANGED_FILES_BLACKLIST.includes(file));
 
 	// Sort all files alphabetically
 	files_deleted.sort();

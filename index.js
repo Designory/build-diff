@@ -172,7 +172,8 @@ const { trimStart } = require('lodash');
 	// Zip the files up
 	// @todo Use a native option
 	process.stdout.write('Zipping changed files... '.yellow);
-	await execPromise(` zip -9 -x "**/.DS_Store" -q -r ${output_dir}.zip ${output_dir}`);
+	let relative_output_dir = path.relative(process.cwd(), output_dir);
+	await execPromise(`zip -9 -x "**/.DS_Store" -q -r ${relative_output_dir}.zip ${relative_output_dir}`);
 	console.log('Done'.green);
 
 	// Output the list of files that were deleted
@@ -186,6 +187,6 @@ const { trimStart } = require('lodash');
 		console.log('  ' + files_changed.join('\n  ') + '\n');
 	}
 
-	let relative_output_dir = path.relative(process.cwd(), output_dir);
+	
 	console.log(`All changed files have been copied to ${relative_output_dir.cyan}, and zipped in ${(relative_output_dir + '.zip').cyan}\n`);
 })();

@@ -12,8 +12,8 @@ $ npm install -g @designory/build-diff
 $ yarn global add @designory/build-diff
 ```
 
-#### Example
+## Usage
 
 ```
-$ build-diff build-old build-new
+$ build-diff <old-build-directory> <new-build-directory>
 ```

@@ -109,16 +109,12 @@ const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES
 		return file_path;
 	});
 
-	// Concat 'added' and 'updated' since functionally they are no different when uploading to AWS (or other)
-	let files_changed = files_updated.concat(files_added);
-
 	// Filter files we don't care about
 	files_changed = files_changed.filter(file => !CHANGED_FILES_BLACKLIST.includes(file));
 
 	// Sort all files alphabetically
 	files_added.sort();
 	files_updated.sort();
-	files_changed.sort();
 	files_deleted.sort();
 
 	log && console.log('Done'.green);
@@ -126,10 +122,6 @@ const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES
 	return {
 		filesAdded: files_added,
 		filesUpdated: files_updated,
-
-		// Combination of 'Added' and 'Updated
-		filesChanged: files_updated,
-
 		filesDeleted: files_deleted,
 	};
 };

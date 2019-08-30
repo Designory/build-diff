@@ -1,9 +1,23 @@
 # Build Diff
 
-Small utility to compare two "build" folders, and copy the differences between them into a new folder.
+[![npm version](https://badge.fury.io/js/%40designory%2Fbuild-diff.svg)](https://badge.fury.io/js/%40designory%2Fbuild-diff)
 
-#### Example
+A small CLI utility to compare two "build" folders, and copy out the differences between them.
+
+## Install
 
 ```
-$ build-diff build-old build-new
+$ npm install -g @designory/build-diff
+# or
+$ yarn global add @designory/build-diff
 ```
+
+## Usage
+
+```
+$ build-diff <old-build-directory> <new-build-directory>
+```
+
+### License
+
+[MIT](./LICENSE)

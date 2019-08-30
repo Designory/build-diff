@@ -10,36 +10,11 @@ const colors = require('colors');
 const glob = require('globby');
 const { trimStart } = require('lodash');
 
-(async () => {
-	// @todo use an argument parsing lib
-	let build_old = process.argv[2];
-	let build_new = process.argv[3];
-
-	const usage_message = '[USAGE] '.yellow + 'Run with:\n\n\t'.green + 'node zip-diffs.js old_build_dir new_build_dir\n';
-
-	if (!build_old || !build_new) {
-		console.log(usage_message);
-		process.exit(1);
-	}
-
-	// Check that build folders exist
-	let build_old_exists = fs.existsSync(build_old);
-	let build_new_exists = fs.existsSync(build_new);
-
-	if (!build_old_exists || !build_new_exists) {
-		console.log('The passed build directories do not exist:'.red, `\n  "${build_old}"\n  "${build_new}"\n`);
-		console.log(usage_message);
-		process.exit(1);
-	}
-	
-	console.log(`Comparing "${build_old.magenta}" against "${build_new.magenta}"...`);
-
-	// If we are here, both directories exist, so let's compute the differences between them
-
+const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES_BLACKLIST, log = true } = {}) => {
 	let diff_result;
 
 	try {
-		process.stdout.write('Diffing directories... '.yellow);
+		log && process.stdout.write('Diffing directories... '.yellow);
 		diff_result = await execPromise(`diff -q -r "${build_old}" "${build_new}"`);
 	} catch (error) {
 		/**
@@ -49,14 +24,14 @@ const { trimStart } = require('lodash');
 		if (error.code === 1) {
 			diff_result = { stdout: error.stdout };
 		} else {
-			console.log('\nThere was an error running the "diff" process:\n'.red, error);
+			log && console.log('\nThere was an error running the "diff" process:\n'.red, error);
 			process.exit(1);
 		}
 	}
 
-	console.log('Done'.green);
+	log && console.log('Done'.green);
 
-	process.stdout.write('Parsing diff results... '.yellow);
+	log && process.stdout.write('Parsing diff results... '.yellow);
 
 	/**
 	 * @note Documentation notes on `diff` program output:
@@ -149,7 +124,7 @@ const { trimStart } = require('lodash');
 	files_deleted.sort();
 	files_changed.sort();
 
-	console.log('Done'.green);
+	log && console.log('Done'.green);
 
 	let output_dir = 'build_for_upload';
 	output_dir = path.resolve(output_dir);
@@ -194,4 +169,4 @@ const { trimStart } = require('lodash');
 
 	
 	console.log(`All changed files have been copied to ${relative_output_dir.cyan}, and zipped in ${(relative_output_dir + '.zip').cyan}\n`);
-})();
+};

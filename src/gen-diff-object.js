@@ -109,11 +109,6 @@ const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES
 		return file_path;
 	});
 
-	if (files_added.length + files_updated + files_deleted.length === 0) {
-		console.error(`No files were different between "${build_old}" and "${build_new}", exiting`);
-		process.exit(0);
-	}
-
 	// Concat 'added' and 'updated' since functionally they are no different when uploading to AWS (or other)
 	let files_changed = files_updated.concat(files_added);
 
@@ -125,48 +120,4 @@ const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES
 	files_changed.sort();
 
 	log && console.log('Done'.green);
-
-	let output_dir = 'build_for_upload';
-	output_dir = path.resolve(output_dir);
-
-	// Create our output directory
-	await fs.ensureDir(output_dir);
-
-	// Copy our changed files over to the output directory!
-	if (files_changed.length) {
-		process.stdout.write('Copying over changed files... '.yellow);
-
-		await Promise.all(
-			files_changed.map(file => {
-				return new Promise((resolve, reject) => {
-					fs.copy(`${build_new}${path.sep}${file}`, `${output_dir}${path.sep}${file}`)
-						.then(() => resolve())
-						.catch(() => reject());
-				});
-			})
-		);
-
-		console.log('Done'.green);
-	}
-
-	// Zip the files up
-	// @todo Use a native option
-	process.stdout.write('Zipping changed files... '.yellow);
-	let relative_output_dir = path.relative(process.cwd(), output_dir);
-	await execPromise(`zip -9 -x "**/.DS_Store" -q -r ${relative_output_dir}.zip ${relative_output_dir}`);
-	console.log('Done'.green);
-
-	// Output the list of files that were deleted
-	if (files_deleted.length) {
-		console.log('\nThe following files were deleted:'.red);
-		console.log('  ' + files_deleted.join('\n  ') + '\n');
-	}
-
-	if (files_changed.length) {
-		console.log('\nThe following files were changed:'.green);
-		console.log('  ' + files_changed.join('\n  ') + '\n');
-	}
-
-	
-	console.log(`All changed files have been copied to ${relative_output_dir.cyan}, and zipped in ${(relative_output_dir + '.zip').cyan}\n`);
 };

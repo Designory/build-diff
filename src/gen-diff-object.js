@@ -110,7 +110,7 @@ const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES
 	});
 
 	// Filter files we don't care about
-	files_changed = files_changed.filter(file => !CHANGED_FILES_BLACKLIST.includes(file));
+	files_changed = files_changed.filter(file => !blacklist.includes(file));
 
 	// Sort all files alphabetically
 	files_added.sort();

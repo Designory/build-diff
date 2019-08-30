@@ -116,8 +116,20 @@ const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES
 	files_changed = files_changed.filter(file => !CHANGED_FILES_BLACKLIST.includes(file));
 
 	// Sort all files alphabetically
-	files_deleted.sort();
+	files_added.sort();
+	files_updated.sort();
 	files_changed.sort();
+	files_deleted.sort();
 
 	log && console.log('Done'.green);
+
+	return {
+		filesAdded: files_added,
+		filesUpdated: files_updated,
+
+		// Combination of 'Added' and 'Updated
+		filesChanged: files_updated,
+
+		filesDeleted: files_deleted,
+	};
 };

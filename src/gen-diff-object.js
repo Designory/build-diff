@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+const CHANGED_FILES_BLACKLIST = require('./diff-blacklist');
 
 const path = require('path');
 const { exec } = require('child_process');
@@ -37,9 +37,7 @@ const { trimStart } = require('lodash');
 	// If we are here, both directories exist, so let's compute the differences between them
 
 	let diff_result;
-	const CHANGED_FILES_BLACKLIST = [
-		'.DS_Store'
-	];
+
 	try {
 		process.stdout.write('Diffing directories... '.yellow);
 		diff_result = await execPromise(`diff -q -r "${build_old}" "${build_new}"`);

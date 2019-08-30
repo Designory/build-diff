@@ -17,3 +17,7 @@ $ yarn global add @designory/build-diff
 ```
 $ build-diff <old-build-directory> <new-build-directory>
 ```
+
+### License
+
+[MIT](./LICENSE)

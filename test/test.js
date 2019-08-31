@@ -1,5 +1,6 @@
 const assert = require('assert');
 const diffDirectories = require('../src/gen-diff-object');
+const DEFAULT_BLACKLIST = require('../src/diff-blacklist');
 
 // Ensure tests are run on mac operating system
 if (process.platform !== 'darwin') {
@@ -124,6 +125,31 @@ describe('`diffDirectories` method', function() {
 				assert.strictEqual(result[FILES_ADDED].length, 2);
 				assert.strictEqual(result[FILES_DELETED].length, 1);
 				assert.strictEqual(result[FILES_UPDATED].length, 1);
+
+				done();
+			})
+			.catch(done);
+	});
+
+	// @todo support regex/globs instead of exact matches
+	it('should ignore updated files on blacklist', function(done) {
+		let { old_dir, new_dir } = PATHS_LOOKUP['blacklist-file'];
+
+		diffDirectories(old_dir, new_dir, { log: false })
+			.then(result => {
+				assert.strictEqual(result[FILES_ADDED].length, 0);
+				assert.strictEqual(result[FILES_DELETED].length, 0);
+				assert.strictEqual(result[FILES_UPDATED].length, 1);
+			})
+			.then(() =>
+				// Run diff again, but ignore 'file.txt'
+				diffDirectories(old_dir, new_dir, { log: false, blacklist: [...DEFAULT_BLACKLIST, 'file.txt'] })
+			)
+			.then(result => {
+				// With blacklist, we shouldn't have any diffs
+				assert.strictEqual(result[FILES_ADDED].length, 0);
+				assert.strictEqual(result[FILES_DELETED].length, 0);
+				assert.strictEqual(result[FILES_UPDATED].length, 0);
 
 				done();
 			})

@@ -133,3 +133,5 @@ const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES
 		filesDeleted: files_deleted,
 	};
 };
+
+module.exports = diffDirectories;

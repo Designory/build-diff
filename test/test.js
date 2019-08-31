@@ -43,7 +43,7 @@ describe('`diffDirectories` method', function() {
 			.catch(done);
 	});
 
-	it('should return find new files', function(done) {
+	it('should find new files', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['new-file'];
 
 		diffDirectories(old_dir, new_dir, { log: false })
@@ -57,7 +57,7 @@ describe('`diffDirectories` method', function() {
 			.catch(done);
 	});
 
-	it('should return find updated files', function(done) {
+	it('should find updated files', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['updated-file'];
 
 		diffDirectories(old_dir, new_dir, { log: false })

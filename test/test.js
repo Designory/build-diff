@@ -9,6 +9,11 @@ if (process.platform !== 'darwin') {
 
 const PATHS_LOOKUP = require('./folders-to-compare/paths-lookup');
 
+const FILES_ADDED = 'filesAdded';
+const FILES_DELETED = 'filesDeleted';
+const FILES_UPDATED = 'filesUpdated';
+const RESULTS_KEYS = [FILES_ADDED, FILES_DELETED, FILES_UPDATED];
+
 describe('`diffDirectories` method', function() {
 	it('should return three keys: `filesAdded`, `filesDeleted`, and `filesUpdated`', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['no-change'];
@@ -17,7 +22,7 @@ describe('`diffDirectories` method', function() {
 			let keys = Object.keys(result);
 			keys.sort();
 
-			assert.deepEqual(keys, ['filesAdded', 'filesDeleted', 'filesUpdated']);
+			assert.deepEqual(keys, RESULTS_KEYS);
 			done();
 		});
 	});

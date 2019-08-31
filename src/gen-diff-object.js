@@ -5,9 +5,7 @@ const { exec } = require('child_process');
 const { promisify } = require('util');
 const execPromise = promisify(exec);
 
-const fs = require('fs-extra');
 const colors = require('colors');
-const glob = require('globby');
 const { trimStart } = require('lodash');
 
 const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES_BLACKLIST, log = true } = {}) => {

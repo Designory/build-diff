@@ -18,36 +18,42 @@ describe('`diffDirectories` method', function() {
 	it('should return three keys: `filesAdded`, `filesDeleted`, and `filesUpdated`', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['no-change'];
 
-		diffDirectories(old_dir, new_dir, { log: false }).then(result => {
-			let keys = Object.keys(result);
-			keys.sort();
+		diffDirectories(old_dir, new_dir, { log: false })
+			.then(result => {
+				let keys = Object.keys(result);
+				keys.sort();
 
-			assert.deepEqual(keys, RESULTS_KEYS);
-			done();
-		});
+				assert.deepEqual(keys, RESULTS_KEYS);
+				done();
+			})
+			.catch(done);
 	});
 
 	it('should return empty arrays when no differences are found', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['no-change'];
 
-		diffDirectories(old_dir, new_dir, { log: false }).then(result => {
-			RESULTS_KEYS.forEach(key => {
-				assert.strictEqual(result[key].length, 0);
-			});
+		diffDirectories(old_dir, new_dir, { log: false })
+			.then(result => {
+				RESULTS_KEYS.forEach(key => {
+					assert.strictEqual(result[key].length, 0);
+				});
 
-			done();
-		});
+				done();
+			})
+			.catch(done);
 	});
 
 	it('should return find new files', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['new-file'];
 
-		diffDirectories(old_dir, new_dir, { log: false }).then(result => {
-			assert.strictEqual(result[FILES_ADDED].length, 1);
-			assert.strictEqual(result[FILES_DELETED].length, 0);
-			assert.strictEqual(result[FILES_UPDATED].length, 0);
+		diffDirectories(old_dir, new_dir, { log: false })
+			.then(result => {
+				assert.strictEqual(result[FILES_ADDED].length, 1);
+				assert.strictEqual(result[FILES_DELETED].length, 0);
+				assert.strictEqual(result[FILES_UPDATED].length, 0);
 
-			done();
-		});
+				done();
+			})
+			.catch(done);
 	});
 });

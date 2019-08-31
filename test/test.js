@@ -26,4 +26,16 @@ describe('`diffDirectories` method', function() {
 			done();
 		});
 	});
+
+	it('should return empty arrays when no differences are found', function(done) {
+		let { old_dir, new_dir } = PATHS_LOOKUP['no-change'];
+
+		diffDirectories(old_dir, new_dir, { log: false }).then(result => {
+			RESULTS_KEYS.forEach(key => {
+				assert.strictEqual(result[key].length, 0);
+			});
+
+			done();
+		});
+	});
 });

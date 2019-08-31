@@ -56,4 +56,18 @@ describe('`diffDirectories` method', function() {
 			})
 			.catch(done);
 	});
+
+	it('should return find updated files', function(done) {
+		let { old_dir, new_dir } = PATHS_LOOKUP['updated-file'];
+
+		diffDirectories(old_dir, new_dir, { log: false })
+			.then(result => {
+				assert.strictEqual(result[FILES_ADDED].length, 0);
+				assert.strictEqual(result[FILES_DELETED].length, 0);
+				assert.strictEqual(result[FILES_UPDATED].length, 1);
+
+				done();
+			})
+			.catch(done);
+	});
 });

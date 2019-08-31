@@ -8,6 +8,15 @@ const execPromise = promisify(exec);
 const colors = require('colors');
 const { trimStart } = require('lodash');
 
+/**
+ * Computes the differences between two directories and returns an object listing those differences.
+ * 
+ * @param {String} build_old Path of old directory.
+ * @param {String} build_new Path of new directory.
+ * @param {Array} [options.blacklist] Array of files to ignore during the diff. Defaults to list from './diff-blacklist.js'
+ * @param {Boolean} [options.log] Logs progress when true; defaults to true.
+ * @returns {Object} Returns an object with `filesAdded`, `filesUpdated`, and `filesDeleted` keys, the values of of which are arrays of file paths.
+ */
 const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES_BLACKLIST, log = true } = {}) => {
 	let diff_result;
 

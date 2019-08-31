@@ -38,4 +38,16 @@ describe('`diffDirectories` method', function() {
 			done();
 		});
 	});
+
+	it('should return find new files', function(done) {
+		let { old_dir, new_dir } = PATHS_LOOKUP['new-file'];
+
+		diffDirectories(old_dir, new_dir, { log: false }).then(result => {
+			assert.strictEqual(result[FILES_ADDED].length, 1);
+			assert.strictEqual(result[FILES_DELETED].length, 0);
+			assert.strictEqual(result[FILES_UPDATED].length, 0);
+
+			done();
+		});
+	});
 });

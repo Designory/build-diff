@@ -114,4 +114,19 @@ describe('`diffDirectories` method', function() {
 			})
 			.catch(done);
 	});
+
+	it('should handle new/updated/deleted all at once', function(done) {
+		let { old_dir, new_dir } = PATHS_LOOKUP['all-combinations'];
+
+		diffDirectories(old_dir, new_dir, { log: false })
+			.then(result => {
+				// 1 new file + 1 new folder
+				assert.strictEqual(result[FILES_ADDED].length, 2);
+				assert.strictEqual(result[FILES_DELETED].length, 1);
+				assert.strictEqual(result[FILES_UPDATED].length, 1);
+
+				done();
+			})
+			.catch(done);
+	});
 });

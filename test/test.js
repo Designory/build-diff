@@ -70,4 +70,18 @@ describe('`diffDirectories` method', function() {
 			})
 			.catch(done);
 	});
+
+	it('should find deleted files', function(done) {
+		let { old_dir, new_dir } = PATHS_LOOKUP['deleted-file'];
+
+		diffDirectories(old_dir, new_dir, { log: false })
+			.then(result => {
+				assert.strictEqual(result[FILES_ADDED].length, 0);
+				assert.strictEqual(result[FILES_DELETED].length, 1);
+				assert.strictEqual(result[FILES_UPDATED].length, 0);
+
+				done();
+			})
+			.catch(done);
+	});
 });

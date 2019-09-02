@@ -2,11 +2,7 @@ const assert = require('assert');
 const diffDirectories = require('../src/gen-diff-object');
 const DEFAULT_BLACKLIST = require('../src/diff-blacklist');
 
-// Ensure tests are run on mac operating system
-if (process.platform !== 'darwin') {
-	console.error('Tests are only supported on macOS at this time');
-	process.exit(1);
-}
+// @todo ensure `diff` binary is installed an available
 
 const PATHS_LOOKUP = require('./folders-to-compare/paths-lookup');
 

@@ -33,6 +33,9 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      - run:
+          name: Output diff binary version
+          command: diff -v
+
       # run tests!
       - run: yarn test
- 

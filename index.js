@@ -7,7 +7,6 @@ const execPromise = promisify(exec);
 
 const fs = require('fs-extra');
 const colors = require('colors');
-const glob = require('globby');
 const { trimStart } = require('lodash');
 const parseArgs = require('minimist');
 

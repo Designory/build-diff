@@ -9,13 +9,15 @@ const fs = require('fs-extra');
 const colors = require('colors');
 const glob = require('globby');
 const { trimStart } = require('lodash');
+const parseArgs = require('minimist');
 
 const diffDirectories = require('./src/gen-diff-object');
 
 (async () => {
-	// @todo use an argument parsing lib
-	let build_old = process.argv[2];
-	let build_new = process.argv[3];
+	const argv = parseArgs(process.argv.slice(2));
+
+	// Minimst uses an underscore (`_` for non-keyed arguments)
+	let [build_old, build_new] = argv._;
 
 	const usage_message = '[USAGE] '.yellow + 'Run with:\n\n\t'.green + 'node zip-diffs.js old_build_dir new_build_dir\n';
 

@@ -12,7 +12,13 @@ const parseArgs = require('minimist');
 const diffDirectories = require('./src/gen-diff-object');
 
 (async () => {
-	const argv = parseArgs(process.argv.slice(2));
+	const arg_options = {
+		boolean: ['progress'],
+		default: {
+			progress: true,
+		},
+	};
+	const argv = parseArgs(process.argv.slice(2), arg_options);
 
 	// Minimst uses an underscore (`_` for non-keyed arguments)
 	let [build_old, build_new] = argv._;

@@ -13,9 +13,14 @@ const diffDirectories = require('./src/gen-diff-object');
 
 (async () => {
 	const arg_options = {
-		boolean: ['progress'],
+		boolean: [
+			'quiet',
+		],
 		default: {
-			progress: true,
+			quiet: false,
+		},
+		alias: {
+			q: 'quiet',
 		},
 	};
 	const argv = parseArgs(process.argv.slice(2), arg_options);
@@ -30,7 +35,7 @@ Usage: build-diff [options] <old-build-directory> <new-build-directory>
 CLI to compare two folders and copy out the differences between them
 
 Options:
-  --[no-]progress  Displays (or hides) progress as it compares both directories. Defaults to true.
+  -q, --quiet  When set to true, hide progress as it compares the directories. Defaults to false.
 `;
 
 	if (!build_old || !build_new) {

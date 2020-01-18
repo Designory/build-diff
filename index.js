@@ -13,12 +13,17 @@ const diffDirectories = require('./src/gen-diff-object');
 
 (async () => {
 	const arg_options = {
-		boolean: ['quiet'],
+		boolean: [
+			'quiet',
+			'json'
+		],
 		default: {
 			quiet: false,
+			json: false,
 		},
 		alias: {
 			q: 'quiet',
+			j: 'json',
 		},
 	};
 	const argv = parseArgs(process.argv.slice(2), arg_options);
@@ -33,7 +38,8 @@ Usage: build-diff [options] <old-build-directory> <new-build-directory>
 CLI to compare two folders and copy out the differences between them
 
 Options:
-  -q, --quiet  When set to true, hide progress as it compares the directories. Defaults to false.
+  -q, --quiet  Hides progress as it compares the directories. Defaults to false.
+  -j, --json   Outputs results as JSON. Defaults to false.
 `;
 
 	if (!build_old || !build_new) {
@@ -55,7 +61,7 @@ Options:
 	}
 
 	// Destructure flags
-	const { quiet } = argv;
+	const { quiet, json } = argv;
 
 	!quiet && console.log(`Comparing "${build_old.magenta}" against "${build_new.magenta}"...`);
 

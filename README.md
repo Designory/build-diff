@@ -22,8 +22,12 @@ $ yarn global add @designory/build-diff
 ## Usage
 
 ```
-$ build-diff <old-build-directory> <new-build-directory>
+$ build-diff [options] <old-build-directory> <new-build-directory>
 ```
+
+### Options
+
+      -q, --quiet  When set to true, hide progress as it compares the directories. Defaults to false.
 
 ### License
 

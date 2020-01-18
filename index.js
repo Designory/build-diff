@@ -116,20 +116,30 @@ Options:
 	);
 	!quiet && console.log('Done\n'.green);
 
-	// Output the list of files that were deleted
-	if (files_deleted.length) {
-		console.log('The following files were deleted:'.red);
-		console.log('  ' + files_deleted.join('\n  ') + '\n');
-	}
+	if (json) {
+		const json_output = {
+			filesDeleted: files_deleted,
+			filesChanged: files_changed,
+			outputDir: relative_output_dir,
+			outputZip: relative_output_dir + '.zip',
+		};
 
-	if (files_changed.length) {
-		console.log('\nThe following files were changed:'.green);
-		console.log('  ' + files_changed.join('\n  ') + '\n');
-	}
+		console.log(JSON.stringify(json_output));
+	} else {
+		if (files_deleted.length) {
+			console.log('The following files were deleted:'.red);
+			console.log('  ' + files_deleted.join('\n  ') + '\n');
+		}
 
-	console.log(
-		`All changed files have been copied to ${relative_output_dir.cyan}, and zipped in ${
-			(relative_output_dir + '.zip').cyan
-		}\n`
-	);
+		if (files_changed.length) {
+			console.log('\nThe following files were changed:'.green);
+			console.log('  ' + files_changed.join('\n  ') + '\n');
+		}
+
+		console.log(
+			`All changed files have been copied to ${relative_output_dir.cyan}, and zipped in ${
+				(relative_output_dir + '.zip').cyan
+			}\n`
+		);
+	}
 })();

@@ -23,7 +23,15 @@ const diffDirectories = require('./src/gen-diff-object');
 	// Minimst uses an underscore (`_` for non-keyed arguments)
 	let [build_old, build_new] = argv._;
 
-	const usage_message = '[USAGE] '.yellow + 'Run with:\n\n\t'.green + 'build-diff <old-build-directory> <new-build-directory>\n';
+	// @todo Have options table automatically generated
+	const usage_message = `
+Usage: build-diff [options] <old-build-directory> <new-build-directory>
+
+CLI to compare two folders and copy out the differences between them
+
+Options:
+  --[no-]progress  Displays (or hides) progress as it compares both directories.
+`;
 
 	if (!build_old || !build_new) {
 		console.log(usage_message);

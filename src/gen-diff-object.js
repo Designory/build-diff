@@ -17,11 +17,11 @@ const { trimStart } = require('lodash');
  * @param {Boolean} [options.log] Logs progress when true; defaults to true.
  * @returns {Object} Returns an object with `filesAdded`, `filesUpdated`, and `filesDeleted` keys, the values of of which are arrays of file paths.
  */
-const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES_BLACKLIST, log = true } = {}) => {
+const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES_BLACKLIST, quiet = false } = {}) => {
 	let diff_result;
 
 	try {
-		log && process.stdout.write('Diffing directories... '.yellow);
+		!quiet && process.stdout.write('Diffing directories... '.yellow);
 		diff_result = await execPromise(`diff -q -r "${build_old}" "${build_new}"`);
 	} catch (error) {
 		/**
@@ -31,14 +31,14 @@ const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES
 		if (error.code === 1) {
 			diff_result = { stdout: error.stdout };
 		} else {
-			log && console.log('\nThere was an error running the "diff" process:\n'.red, error);
+			console.error('\nThere was an error running the "diff" process:\n'.red, error);
 			process.exit(1);
 		}
 	}
 
-	log && console.log('Done'.green);
+	!quiet && console.log('Done'.green);
 
-	log && process.stdout.write('Parsing diff results... '.yellow);
+	!quiet && process.stdout.write('Parsing diff results... '.yellow);
 
 	/**
 	 * @note Documentation notes on `diff` program output:
@@ -134,7 +134,7 @@ const diffDirectories = async (build_old, build_new, { blacklist = CHANGED_FILES
 	files_updated.sort();
 	files_deleted.sort();
 
-	log && console.log('Done'.green);
+	!quiet && console.log('Done'.green);
 
 	return {
 		filesAdded: files_added,

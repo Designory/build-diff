@@ -12,15 +12,32 @@ const parseArgs = require('minimist');
 const diffDirectories = require('./src/gen-diff-object');
 
 (async () => {
-	const argv = parseArgs(process.argv.slice(2));
+	const arg_options = {
+		boolean: ['quiet'],
+		default: {
+			quiet: false,
+		},
+		alias: {
+			q: 'quiet',
+		},
+	};
+	const argv = parseArgs(process.argv.slice(2), arg_options);
 
 	// Minimst uses an underscore (`_` for non-keyed arguments)
 	let [build_old, build_new] = argv._;
 
-	const usage_message = '[USAGE] '.yellow + 'Run with:\n\n\t'.green + 'build-diff <old-build-directory> <new-build-directory>\n';
+	// @todo Have options table automatically generated
+	const usage_message = `
+Usage: build-diff [options] <old-build-directory> <new-build-directory>
+
+CLI to compare two folders and copy out the differences between them
+
+Options:
+  -q, --quiet  When set to true, hide progress as it compares the directories. Defaults to false.
+`;
 
 	if (!build_old || !build_new) {
-		console.log(usage_message);
+		console.error(usage_message);
 		process.exit(1);
 	}
 
@@ -29,19 +46,26 @@ const diffDirectories = require('./src/gen-diff-object');
 	let build_new_exists = fs.existsSync(build_new);
 
 	if (!build_old_exists || !build_new_exists) {
-		console.log('The passed build directories do not exist:'.red, `\n  "${build_old}"\n  "${build_new}"\n`);
-		console.log(usage_message);
+		console.error(
+			'The passed build directories do not exist:'.red,
+			`\n  "${build_old}"\n  "${build_new}"\n`
+		);
+		console.error(usage_message);
 		process.exit(1);
 	}
-	
-	console.log(`Comparing "${build_old.magenta}" against "${build_new.magenta}"...`);
+
+	// Destructure flags
+	const { quiet } = argv;
+
+	!quiet && console.log(`Comparing "${build_old.magenta}" against "${build_new.magenta}"...`);
 
 	// If we are here, both directories exist, so let's compute the differences between them
 
-	let { filesAdded: files_added, filesUpdated: files_updated, filesDeleted: files_deleted } = await diffDirectories(
-		build_old,
-		build_new
-	);
+	let {
+		filesAdded: files_added,
+		filesUpdated: files_updated,
+		filesDeleted: files_deleted,
+	} = await diffDirectories(build_old, build_new, { quiet });
 
 	if (files_added.length + files_updated + files_deleted.length === 0) {
 		console.error(`No files were different between "${build_old}" and "${build_new}", exiting`);
@@ -62,7 +86,7 @@ const diffDirectories = require('./src/gen-diff-object');
 
 	// Copy our changed files over to the output directory!
 	if (files_changed.length) {
-		process.stdout.write('Copying over changed files... '.yellow);
+		!quiet && process.stdout.write('Copying over changed files... '.yellow);
 
 		await Promise.all(
 			files_changed.map(file => {
@@ -74,19 +98,21 @@ const diffDirectories = require('./src/gen-diff-object');
 			})
 		);
 
-		console.log('Done'.green);
+		!quiet && console.log('Done'.green);
 	}
 
 	// Zip the files up
 	// @todo Use a native option
-	process.stdout.write('Zipping changed files... '.yellow);
+	!quiet && process.stdout.write('Zipping changed files... '.yellow);
 	let relative_output_dir = path.relative(process.cwd(), output_dir);
-	await execPromise(`zip -9 -x "**/.DS_Store" -q -r ${relative_output_dir}.zip ${relative_output_dir}`);
-	console.log('Done'.green);
+	await execPromise(
+		`zip -9 -x "**/.DS_Store" -q -r ${relative_output_dir}.zip ${relative_output_dir}`
+	);
+	!quiet && console.log('Done\n'.green);
 
 	// Output the list of files that were deleted
 	if (files_deleted.length) {
-		console.log('\nThe following files were deleted:'.red);
+		console.log('The following files were deleted:'.red);
 		console.log('  ' + files_deleted.join('\n  ') + '\n');
 	}
 
@@ -95,5 +121,9 @@ const diffDirectories = require('./src/gen-diff-object');
 		console.log('  ' + files_changed.join('\n  ') + '\n');
 	}
 
-	console.log(`All changed files have been copied to ${relative_output_dir.cyan}, and zipped in ${(relative_output_dir + '.zip').cyan}\n`);
+	console.log(
+		`All changed files have been copied to ${relative_output_dir.cyan}, and zipped in ${
+			(relative_output_dir + '.zip').cyan
+		}\n`
+	);
 })();

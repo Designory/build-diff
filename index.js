@@ -17,7 +17,7 @@ const diffDirectories = require('./src/gen-diff-object');
 	// Minimst uses an underscore (`_` for non-keyed arguments)
 	let [build_old, build_new] = argv._;
 
-	const usage_message = '[USAGE] '.yellow + 'Run with:\n\n\t'.green + 'node zip-diffs.js old_build_dir new_build_dir\n';
+	const usage_message = '[USAGE] '.yellow + 'Run with:\n\n\t'.green + 'build-diff <old-build-directory> <new-build-directory>\n';
 
 	if (!build_old || !build_new) {
 		console.log(usage_message);

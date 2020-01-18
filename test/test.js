@@ -15,7 +15,7 @@ describe('`diffDirectories` method', function() {
 	it('should return three keys: `filesAdded`, `filesDeleted`, and `filesUpdated`', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['no-change'];
 
-		diffDirectories(old_dir, new_dir, { log: false })
+		diffDirectories(old_dir, new_dir, { quiet: true })
 			.then(result => {
 				let keys = Object.keys(result);
 				keys.sort();
@@ -29,7 +29,7 @@ describe('`diffDirectories` method', function() {
 	it('should return empty arrays when no differences are found', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['no-change'];
 
-		diffDirectories(old_dir, new_dir, { log: false })
+		diffDirectories(old_dir, new_dir, { quiet: true })
 			.then(result => {
 				RESULTS_KEYS.forEach(key => {
 					assert.strictEqual(result[key].length, 0);
@@ -43,7 +43,7 @@ describe('`diffDirectories` method', function() {
 	it('should find new files', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['new-file'];
 
-		diffDirectories(old_dir, new_dir, { log: false })
+		diffDirectories(old_dir, new_dir, { quiet: true })
 			.then(result => {
 				assert.strictEqual(result[FILES_ADDED].length, 1);
 				assert.strictEqual(result[FILES_DELETED].length, 0);
@@ -57,7 +57,7 @@ describe('`diffDirectories` method', function() {
 	it('should find new folders', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['new-folder'];
 
-		diffDirectories(old_dir, new_dir, { log: false })
+		diffDirectories(old_dir, new_dir, { quiet: true })
 			.then(result => {
 				assert.strictEqual(result[FILES_ADDED].length, 1);
 				assert.strictEqual(result[FILES_DELETED].length, 0);
@@ -72,7 +72,7 @@ describe('`diffDirectories` method', function() {
 	it('should find new folders but not report all new files within that new folder', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['new-folder-with-many-new-files'];
 
-		diffDirectories(old_dir, new_dir, { log: false })
+		diffDirectories(old_dir, new_dir, { quiet: true })
 			.then(result => {
 				// New folder contains 3 files, but just gets reported as one new folder
 				assert.strictEqual(result[FILES_ADDED].length, 1);
@@ -87,7 +87,7 @@ describe('`diffDirectories` method', function() {
 	it('should find updated files', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['updated-file'];
 
-		diffDirectories(old_dir, new_dir, { log: false })
+		diffDirectories(old_dir, new_dir, { quiet: true })
 			.then(result => {
 				assert.strictEqual(result[FILES_ADDED].length, 0);
 				assert.strictEqual(result[FILES_DELETED].length, 0);
@@ -101,7 +101,7 @@ describe('`diffDirectories` method', function() {
 	it('should find deleted files', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['deleted-file'];
 
-		diffDirectories(old_dir, new_dir, { log: false })
+		diffDirectories(old_dir, new_dir, { quiet: true })
 			.then(result => {
 				assert.strictEqual(result[FILES_ADDED].length, 0);
 				assert.strictEqual(result[FILES_DELETED].length, 1);
@@ -115,7 +115,7 @@ describe('`diffDirectories` method', function() {
 	it('should handle new/updated/deleted all at once', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['all-combinations'];
 
-		diffDirectories(old_dir, new_dir, { log: false })
+		diffDirectories(old_dir, new_dir, { quiet: true })
 			.then(result => {
 				// 1 new file + 1 new folder
 				assert.strictEqual(result[FILES_ADDED].length, 2);
@@ -131,7 +131,7 @@ describe('`diffDirectories` method', function() {
 	it('should ignore updated files on blacklist', function(done) {
 		let { old_dir, new_dir } = PATHS_LOOKUP['blacklist-file'];
 
-		diffDirectories(old_dir, new_dir, { log: false })
+		diffDirectories(old_dir, new_dir, { quiet: true })
 			.then(result => {
 				assert.strictEqual(result[FILES_ADDED].length, 0);
 				assert.strictEqual(result[FILES_DELETED].length, 0);
@@ -139,7 +139,7 @@ describe('`diffDirectories` method', function() {
 			})
 			.then(() =>
 				// Run diff again, but ignore 'file.txt'
-				diffDirectories(old_dir, new_dir, { log: false, blacklist: [...DEFAULT_BLACKLIST, 'file.txt'] })
+				diffDirectories(old_dir, new_dir, { quiet: true, blacklist: [...DEFAULT_BLACKLIST, 'file.txt'] })
 			)
 			.then(result => {
 				// With blacklist, we shouldn't have any diffs

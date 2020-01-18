@@ -49,7 +49,7 @@ new/
 └── updated.txt
 ```
 
-Comparing the two yeilds:
+Diffing the two folders yields:
 
 ```
 $ build-diff old new

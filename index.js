@@ -13,12 +13,17 @@ const diffDirectories = require('./src/gen-diff-object');
 
 (async () => {
 	const arg_options = {
-		boolean: ['quiet'],
+		boolean: [
+			'quiet',
+			'json'
+		],
 		default: {
 			quiet: false,
+			json: false,
 		},
 		alias: {
 			q: 'quiet',
+			j: 'json',
 		},
 	};
 	const argv = parseArgs(process.argv.slice(2), arg_options);
@@ -33,7 +38,8 @@ Usage: build-diff [options] <old-build-directory> <new-build-directory>
 CLI to compare two folders and copy out the differences between them
 
 Options:
-  -q, --quiet  When set to true, hide progress as it compares the directories. Defaults to false.
+  -q, --quiet  Hides progress as it compares the directories. Defaults to false.
+  -j, --json   Outputs results as JSON. Defaults to false.
 `;
 
 	if (!build_old || !build_new) {
@@ -55,7 +61,7 @@ Options:
 	}
 
 	// Destructure flags
-	const { quiet } = argv;
+	const { quiet, json } = argv;
 
 	!quiet && console.log(`Comparing "${build_old.magenta}" against "${build_new.magenta}"...`);
 
@@ -110,20 +116,30 @@ Options:
 	);
 	!quiet && console.log('Done\n'.green);
 
-	// Output the list of files that were deleted
-	if (files_deleted.length) {
-		console.log('The following files were deleted:'.red);
-		console.log('  ' + files_deleted.join('\n  ') + '\n');
-	}
+	if (json) {
+		const json_output = {
+			filesDeleted: files_deleted,
+			filesChanged: files_changed,
+			outputDir: relative_output_dir,
+			outputZip: relative_output_dir + '.zip',
+		};
 
-	if (files_changed.length) {
-		console.log('\nThe following files were changed:'.green);
-		console.log('  ' + files_changed.join('\n  ') + '\n');
-	}
+		console.log(JSON.stringify(json_output));
+	} else {
+		if (files_deleted.length) {
+			console.log('The following files were deleted:'.red);
+			console.log('  ' + files_deleted.join('\n  ') + '\n');
+		}
 
-	console.log(
-		`All changed files have been copied to ${relative_output_dir.cyan}, and zipped in ${
-			(relative_output_dir + '.zip').cyan
-		}\n`
-	);
+		if (files_changed.length) {
+			console.log('\nThe following files were changed:'.green);
+			console.log('  ' + files_changed.join('\n  ') + '\n');
+		}
+
+		console.log(
+			`All changed files have been copied to ${relative_output_dir.cyan}, and zipped in ${
+				(relative_output_dir + '.zip').cyan
+			}\n`
+		);
+	}
 })();

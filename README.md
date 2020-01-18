@@ -27,8 +27,67 @@ $ build-diff [options] <old-build-directory> <new-build-directory>
 
 ### Options
 
-      -q, --quiet  Hides progress as it compares the directories. Defaults to false.
-      -j, --json   Outputs results as JSON. Defaults to false.
+```
+  -q, --quiet  Hides progress as it compares the directories. Defaults to false.
+  -j, --json   Outputs results as JSON. Defaults to false.
+```
+
+## Examples
+
+Given two folders `old/` and `new/`, whose contents are shown below:
+```
+old/
+├── deleted.txt
+├── unchanged.txt
+└── updated.txt
+
+new/
+├── new.txt
+├── sub/
+│   └── file.txt
+├── unchanged.txt
+└── updated.txt
+```
+
+Comparing the two yeilds:
+
+```
+$ build-diff old new
+Comparing "old" against "new"...
+Diffing directories... Done
+Parsing diff results... Done
+Copying over changed files... Done
+Zipping changed files... Done
+
+The following files were deleted:
+  deleted.txt
+
+
+The following files were changed:
+  new.txt
+  sub
+  updated.txt
+
+All changed files have been copied to build_for_upload, and zipped in build_for_upload.zip
+```
+
+When using the `--quiet` and `--json` flag, I can pipe the output to [jq](https://github.com/stedolan/jq) and view the results as a formatted JSON string.
+
+```
+$ build-diff --quiet --json old new | jq
+{
+  "filesDeleted": [
+    "deleted.txt"
+  ],
+  "filesChanged": [
+    "new.txt",
+    "sub",
+    "updated.txt"
+  ],
+  "outputDir": "build_for_upload",
+  "outputZip": "build_for_upload.zip"
+}
+```
 
 ## License
 

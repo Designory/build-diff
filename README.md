@@ -4,6 +4,13 @@
 
 A small CLI utility to compare two "build" folders, and copy out the differences between them.
 
+## Requirements
+
+*  [`zip`](http://infozip.sourceforge.net/UnZip.html)
+*  [`diff`](https://www.gnu.org/software/diffutils/)
+
+Both of these come standard with macOS and probably most linux/unix flavors.
+
 ## Install
 
 ```

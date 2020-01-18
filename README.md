@@ -27,8 +27,9 @@ $ build-diff [options] <old-build-directory> <new-build-directory>
 
 ### Options
 
-      -q, --quiet  When set to true, hide progress as it compares the directories. Defaults to false.
+      -q, --quiet  Hides progress as it compares the directories. Defaults to false.
+      -j, --json   Outputs results as JSON. Defaults to false.
 
-### License
+## License
 
 [MIT](./LICENSE)

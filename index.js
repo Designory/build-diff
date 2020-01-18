@@ -30,7 +30,7 @@ Usage: build-diff [options] <old-build-directory> <new-build-directory>
 CLI to compare two folders and copy out the differences between them
 
 Options:
-  --[no-]progress  Displays (or hides) progress as it compares both directories.
+  --[no-]progress  Displays (or hides) progress as it compares both directories. Defaults to true.
 `;
 
 	if (!build_old || !build_new) {

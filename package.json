@@ -1,6 +1,6 @@
 {
   "name": "@designory/build-diff",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A small CLI utility to compare two \"build\" folders, and copy out the differences between them.",
   "main": "index.js",
   "bin": {

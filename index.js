@@ -9,9 +9,18 @@ const fs = require('fs-extra');
 const colors = require('colors');
 const parseArgs = require('minimist');
 
+const hasBinary = require('./src/has-binary');
 const diffDirectories = require('./src/gen-diff-object');
 
 (async () => {
+	const has_zip = hasBinary('zip');
+	const has_diff = hasBinary('diff');
+
+	if (!(has_zip && has_diff)) {
+		console.error(`Could not find both "${'zip'.yellow}" and "${'diff'.yellow}" binaries, both of which are required. Exiting.`);
+		process.exit(1);
+	}
+
 	const arg_options = {
 		boolean: [
 			'quiet',

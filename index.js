@@ -111,8 +111,7 @@ Options:
 	// Sort newly formed `files_changed`; other lists are already sorted
 	files_changed.sort();
 
-	let output_dir = 'build_for_upload';
-	output_dir = path.resolve(output_dir);
+	let output_dir = path.resolve(output);
 
 	// Create our output directory
 	await fs.ensureDir(output_dir);

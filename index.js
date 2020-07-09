@@ -18,18 +18,14 @@ const isInvalidPath = require('./src/is-invalid-path');
 	const has_diff = hasBinary('diff');
 
 	if (!(has_zip && has_diff)) {
+		// prettier-ignore
 		console.error(`Could not find both "${'zip'.yellow}" and "${'diff'.yellow}" binaries, both of which are required. Exiting.`);
 		process.exit(1);
 	}
 
 	const arg_options = {
-		boolean: [
-			'quiet',
-			'json'
-		],
-		string: [
-			'output',
-		],
+		boolean: ['quiet', 'json'],
+		string: ['output'],
 		default: {
 			quiet: false,
 			json: false,
@@ -127,7 +123,7 @@ Options:
 		!quiet && process.stdout.write('Copying over changed files... '.yellow);
 
 		await Promise.all(
-			files_changed.map(file => {
+			files_changed.map((file) => {
 				return new Promise((resolve, reject) => {
 					fs.copy(`${build_new}${path.sep}${file}`, `${output_dir}${path.sep}${file}`)
 						.then(() => resolve())

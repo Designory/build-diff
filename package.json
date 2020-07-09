@@ -35,6 +35,7 @@
     "minimist": "^1.2.0"
   },
   "devDependencies": {
+    "concat-stream": "^2.0.0",
     "mocha": "^6.2.0"
   }
 }

@@ -11,28 +11,30 @@ const parseArgs = require('minimist');
 
 const hasBinary = require('./src/has-binary');
 const diffDirectories = require('./src/gen-diff-object');
+const isInvalidPath = require('./src/is-invalid-path');
 
 (async () => {
 	const has_zip = hasBinary('zip');
 	const has_diff = hasBinary('diff');
 
 	if (!(has_zip && has_diff)) {
+		// prettier-ignore
 		console.error(`Could not find both "${'zip'.yellow}" and "${'diff'.yellow}" binaries, both of which are required. Exiting.`);
 		process.exit(1);
 	}
 
 	const arg_options = {
-		boolean: [
-			'quiet',
-			'json'
-		],
+		boolean: ['quiet', 'json'],
+		string: ['output'],
 		default: {
 			quiet: false,
 			json: false,
+			output: 'build_for_upload',
 		},
 		alias: {
 			q: 'quiet',
 			j: 'json',
+			o: 'output',
 		},
 	};
 	const argv = parseArgs(process.argv.slice(2), arg_options);
@@ -46,9 +48,12 @@ Usage: build-diff [options] <old-build-directory> <new-build-directory>
 
 CLI to compare two folders and copy out the differences between them
 
+Version 0.2.3
+
 Options:
-  -q, --quiet  Hides progress as it compares the directories. Defaults to false.
-  -j, --json   Outputs results as JSON. Defaults to false.
+  -q, --quiet          Hides progress as it compares the directories. Defaults to false.
+  -j, --json           Outputs results as JSON. Defaults to false.
+  -o, --output <name>  Name of the output folder and ZIP file. Defaults to "build_for_upload".
 `;
 
 	if (!build_old || !build_new) {
@@ -70,7 +75,16 @@ Options:
 	}
 
 	// Destructure flags
-	const { quiet, json } = argv;
+	const { quiet, json, output } = argv;
+
+	if (isInvalidPath(output)) {
+		console.error(
+			'The passed output directory has invalid characters:'.red,
+			`\n  "${output}"\n`
+		);
+		console.error(usage_message);
+		process.exit(1);
+	}
 
 	!quiet && console.log(`Comparing "${build_old.magenta}" against "${build_new.magenta}"...`);
 
@@ -93,18 +107,23 @@ Options:
 	// Sort newly formed `files_changed`; other lists are already sorted
 	files_changed.sort();
 
-	let output_dir = 'build_for_upload';
-	output_dir = path.resolve(output_dir);
+	let output_dir = path.resolve(output);
 
 	// Create our output directory
-	await fs.ensureDir(output_dir);
+	try {
+		await fs.ensureDir(output_dir);
+	} catch (e) {
+		console.error(`Unable to create output directory at "${output_dir}"`);
+		console.error(e);
+		process.exit(2);
+	}
 
 	// Copy our changed files over to the output directory!
 	if (files_changed.length) {
 		!quiet && process.stdout.write('Copying over changed files... '.yellow);
 
 		await Promise.all(
-			files_changed.map(file => {
+			files_changed.map((file) => {
 				return new Promise((resolve, reject) => {
 					fs.copy(`${build_new}${path.sep}${file}`, `${output_dir}${path.sep}${file}`)
 						.then(() => resolve())

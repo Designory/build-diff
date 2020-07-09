@@ -1,6 +1,10 @@
+const fs = require('fs-extra');
+const path = require('path');
 const assert = require('assert');
 const diffDirectories = require('../src/gen-diff-object');
 const DEFAULT_BLACKLIST = require('../src/diff-blacklist');
+const cmd = require('./cmd');
+const bin = path.resolve(__dirname, '../index.js');
 
 // @todo ensure `diff` binary is installed an available
 
@@ -150,5 +154,51 @@ describe('`diffDirectories` method', function() {
 				done();
 			})
 			.catch(done);
+	});
+});
+
+describe('Command Line usage', function () {
+	it('should use "build_for_upload" as default output dir', async function () {
+		const output = 'build_for_upload';
+		let { old_dir, new_dir } = PATHS_LOOKUP['blacklist-file'];
+		try {
+			await cmd.execute(bin, [old_dir, new_dir]);
+		} catch (err) {
+			assert.ifError(err);
+		}
+
+		const dir = path.resolve(__dirname, `../${output}`);
+		const zip = path.resolve(__dirname, `../${output}.zip`);
+		let build_folder_exists = await fs.exists(dir);
+		let build_zip_exists = await fs.exists(zip);
+		assert.ok(build_folder_exists);
+		assert.ok(build_zip_exists);
+
+		await fs.remove(dir);
+		await fs.remove(zip);
+	});
+
+	it('should accept custom output dirs', async function () {
+		const output = 'custom_output';
+		let { old_dir, new_dir } = PATHS_LOOKUP['blacklist-file'];
+
+		// Test both `-o` and `--output`
+		for (let cli_arg of ['-o', '--output']) {
+			try {
+				await cmd.execute(bin, [cli_arg, output, old_dir, new_dir]);
+			} catch (err) {
+				assert.ifError(err);
+			}
+
+			const dir = path.resolve(__dirname, `../${output}`);
+			const zip = path.resolve(__dirname, `../${output}.zip`);
+			let build_folder_exists = await fs.exists(dir);
+			let build_zip_exists = await fs.exists(zip);
+			assert.ok(build_folder_exists);
+			assert.ok(build_zip_exists);
+
+			await fs.remove(dir);
+			await fs.remove(zip);
+		}
 	});
 });

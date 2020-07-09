@@ -114,7 +114,13 @@ Options:
 	let output_dir = path.resolve(output);
 
 	// Create our output directory
-	await fs.ensureDir(output_dir);
+	try {
+		await fs.ensureDir(output_dir);
+	} catch (e) {
+		console.error(`Unable to create output directory at "${output_dir}"`);
+		console.error(e);
+		process.exit(2);
+	}
 
 	// Copy our changed files over to the output directory!
 	if (files_changed.length) {

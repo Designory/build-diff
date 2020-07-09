@@ -11,6 +11,7 @@ const parseArgs = require('minimist');
 
 const hasBinary = require('./src/has-binary');
 const diffDirectories = require('./src/gen-diff-object');
+const isInvalidPath = require('./src/is-invalid-path');
 
 (async () => {
 	const has_zip = hasBinary('zip');
@@ -78,7 +79,16 @@ Options:
 	}
 
 	// Destructure flags
-	const { quiet, json } = argv;
+	const { quiet, json, output } = argv;
+
+	if (isInvalidPath(output)) {
+		console.error(
+			'The passed output directory has invalid characters:'.red,
+			`\n  "${output}"\n`
+		);
+		console.error(usage_message);
+		process.exit(1);
+	}
 
 	!quiet && console.log(`Comparing "${build_old.magenta}" against "${build_new.magenta}"...`);
 

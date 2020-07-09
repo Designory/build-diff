@@ -48,7 +48,7 @@ Usage: build-diff [options] <old-build-directory> <new-build-directory>
 
 CLI to compare two folders and copy out the differences between them
 
-Version 0.2.3
+Version 0.3.0
 
 Options:
   -q, --quiet          Hides progress as it compares the directories. Defaults to false.

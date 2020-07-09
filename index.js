@@ -26,13 +26,18 @@ const diffDirectories = require('./src/gen-diff-object');
 			'quiet',
 			'json'
 		],
+		string: [
+			'output',
+		],
 		default: {
 			quiet: false,
 			json: false,
+			output: 'build_for_upload',
 		},
 		alias: {
 			q: 'quiet',
 			j: 'json',
+			o: 'output',
 		},
 	};
 	const argv = parseArgs(process.argv.slice(2), arg_options);
@@ -49,8 +54,9 @@ CLI to compare two folders and copy out the differences between them
 Version 0.2.3
 
 Options:
-  -q, --quiet  Hides progress as it compares the directories. Defaults to false.
-  -j, --json   Outputs results as JSON. Defaults to false.
+  -q, --quiet          Hides progress as it compares the directories. Defaults to false.
+  -j, --json           Outputs results as JSON. Defaults to false.
+  -o, --output <name>  Name of the output folder and ZIP file. Defaults to "build_for_upload".
 `;
 
 	if (!build_old || !build_new) {

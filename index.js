@@ -13,6 +13,8 @@ const hasBinary = require('./src/has-binary');
 const diffDirectories = require('./src/gen-diff-object');
 const isInvalidPath = require('./src/is-invalid-path');
 
+const { version } = require('./package.json');
+
 (async () => {
 	const has_zip = hasBinary('zip');
 	const has_diff = hasBinary('diff');
@@ -48,7 +50,7 @@ Usage: build-diff [options] <old-build-directory> <new-build-directory>
 
 CLI to compare two folders and copy out the differences between them
 
-Version 0.3.0
+Version ${version}
 
 Options:
   -q, --quiet          Hides progress as it compares the directories. Defaults to false.

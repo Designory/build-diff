@@ -48,7 +48,7 @@ const { version } = require('./package.json');
 	const usage_message = `
 Usage: build-diff [options] <old-build-directory> <new-build-directory>
 
-CLI to compare two folders and copy out the differences between them
+CLI to compare two folders and copy out the differences between them.
 
 Version ${version}
 
